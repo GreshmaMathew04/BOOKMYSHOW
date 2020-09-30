@@ -1,5 +1,5 @@
 package bookmyshowassignment;
-
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -8,13 +8,17 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BOOKMYSHOW {
+
     String url="https://in.bookmyshow.com/";
-    WebDriver driver;
+   public static WebDriver driver;
+
     @BeforeMethod
     @Parameters("browser")
     public  void setup(String browser) throws InterruptedException {
@@ -59,7 +63,7 @@ public class BOOKMYSHOW {
     }
 
 
-    @Test(priority = 0)
+   @Test(priority = 0)
         public void searchMovie() throws InterruptedException, IOException {
         driver.findElement(By.id("input-search-box")).sendKeys("Fantasy Island");
         Thread.sleep(2000);
@@ -70,7 +74,6 @@ public class BOOKMYSHOW {
     }
 
     @Test(priority = 1)
-
     public void invalidMovie() throws InterruptedException {
         driver.findElement(By.id("input-search-box")).sendKeys("qq");
         Thread.sleep(2000);
@@ -108,7 +111,7 @@ public class BOOKMYSHOW {
     }
 
 
-    @Test(priority = 3)
+  @Test(priority = 3)
     public void invalidCast() throws InterruptedException {
         Boolean found=false;
         Boolean foundMusician=false;
@@ -141,9 +144,11 @@ public class BOOKMYSHOW {
     }
 
 
-    @Test(priority = 4)
+   @Test(priority = 4)
     public void ListYourShow() throws InterruptedException {
         boolean found=false;
+        WebDriverWait wait=new WebDriverWait(driver, 200);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"navbar\"]/div[3]/div/div[2]/ul/li[1]/a")));
         driver.findElement(By.xpath("//*[@id=\"navbar\"]/div[3]/div/div[2]/ul/li[1]/a")).click();
         Thread.sleep(3000);
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -169,9 +174,11 @@ public class BOOKMYSHOW {
 
     }
 
-   @Test(priority = 5)
+  @Test(priority = 5)
     public void moreLists() throws InterruptedException {
         boolean found=false;
+       WebDriverWait wait=new WebDriverWait(driver, 200);
+       wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"navbar\"]/div[3]/div/div[2]/ul/li[1]/a")));
         driver.findElement(By.xpath("//*[@id=\"navbar\"]/div[3]/div/div[2]/ul/li[1]/a")).click();
         Thread.sleep(3000);
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -198,6 +205,8 @@ public class BOOKMYSHOW {
     @Test(priority = 6)
     public void rewardInOffer(){
         Boolean found=false;
+        WebDriverWait wait=new WebDriverWait(driver, 200);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"navbar\"]/div[3]/div/div[2]/ul/li[1]/a")));
         driver.findElement(By.xpath("/html/body/div[5]/header/nav/div[3]/div/div[2]/ul/li[3]/a")).click();
         WebElement reward=driver.findElement(By.xpath("/html/body/div[5]/div[2]/section[1]/div/ul/li[4]"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -220,17 +229,21 @@ public class BOOKMYSHOW {
 
     @Test(priority = 7)
     public void iciciReward(){
+        WebDriverWait wait=new WebDriverWait(driver, 200);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/header/nav/div[3]/div/div[2]/ul/li[3]/a")));
        driver.findElement(By.xpath("/html/body/div[5]/header/nav/div[3]/div/div[2]/ul/li[3]/a")).click();
         WebElement element=driver.findElement(By.xpath("//input[@id='ajax-typeahead']"));
         element.sendKeys("ICICI Bank 25% Discount Offer");
        element.sendKeys(Keys.ENTER);
-        String value=driver.findElement(By.xpath("//div[@class='__description']/h4")).getText();
-        Assert.assertEquals("ICICI BANK 25% DISCOUNT OFFER",value);
+        String value=driver.findElement(By.xpath("(//div[@class='__description']/h4)[4]")).getText();
+        Assert.assertEquals("ICICI BANK CREDIT CARD 25% DISCOUNT OFFER",value);
     }
 
     @Test(priority = 8)
     public void kotakMahindra(){
         Boolean found=false;
+        WebDriverWait wait=new WebDriverWait(driver, 200);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/header/nav/div[3]/div/div[2]/ul/li[3]/a")));
         driver.findElement(By.xpath("/html/body/div[5]/header/nav/div[3]/div/div[2]/ul/li[3]/a")).click();
         WebElement reward=driver.findElement(By.xpath("/html/body/div[5]/div[2]/section[1]/div/ul/li[4]"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -247,6 +260,8 @@ public class BOOKMYSHOW {
     @Test(priority = 9)
     public void footer(){
         Boolean foundFooter=false;
+        WebDriverWait wait=new WebDriverWait(driver, 200);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='row']/div/h4")));
        WebElement element= driver.findElement(By.xpath("//div[@class='row']/div/h4"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].scrollIntoView();", element);
@@ -266,6 +281,8 @@ public class BOOKMYSHOW {
 
    @Test(priority = 10)
     public void language() throws InterruptedException {
+       WebDriverWait wait=new WebDriverWait(driver, 200);
+       wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='lang-select']/a")));
         driver.findElement(By.xpath("//div[@class='lang-select']/a")).click();
         List<WebElement>langList=driver.findElements(By.xpath("//ul[@class='options']/li/label"));
         for (WebElement ele:langList) {
@@ -274,7 +291,7 @@ public class BOOKMYSHOW {
         Thread.sleep(2000);
         }
 
-        @Test(priority = 11)
+       @Test(priority = 11)
         public void selectRegion() throws InterruptedException {
         driver.findElement(By.id("dTopRgnDD")).click();
             driver.findElement(By.id("inp_RegionSearch_top")).sendKeys("Goa");
@@ -292,5 +309,13 @@ public class BOOKMYSHOW {
 
     }
 
-
+public static String takeScreenshot() throws IOException {
+        File screenshot=((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+         Random random= new Random();
+         String file="ss"+random.nextInt(1000)+".png";
+         String fileName=System.getProperty("user.dir")+"\\report\\"+file;
+        File destinationFile=new File(fileName);
+         FileUtils.copyFile(screenshot,destinationFile);
+         return file;
+}
 }

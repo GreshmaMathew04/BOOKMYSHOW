@@ -1,5 +1,10 @@
 package utilities;
 
+import bookmyshowassignment.BOOKMYSHOW;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -10,58 +15,74 @@ import org.testng.ITestResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class listenerClass implements ITestListener {
-    WebDriver driver;
+    ExtentReports reports;
+    ExtentSparkReporter extentSparkReporter;
+    ExtentTest extentTest;
+    BOOKMYSHOW bookmyshow;
 
     public void onStart(ITestContext context) {
+        String path= System.getProperty("user.dir");
+        reports=new ExtentReports();
+        extentSparkReporter=new ExtentSparkReporter(path+"\\report\\report.html");
+        try{
+            reports.setSystemInfo("Machine Name", InetAddress.getLocalHost().getHostName());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        reports.attachReporter(extentSparkReporter);
         System.out.println("onStart method started");
     }
 
     public void onFinish(ITestContext context) {
+        reports.flush();
         System.out.println("onFinish method started");
     }
 
-    public void onTestStart(ITestResult result) {
-        System.out.println("New Test Started" +result.getName());
+
+
+    public void onTestStart(ITestResult iTestResult) {
+        System.out.println("onTestStart method started");
     }
 
     public void onTestSuccess(ITestResult result) {
-        System.out.println("onTestSuccess Method" +result.getName());
-        TakesScreenshot scrShot =((TakesScreenshot)driver);
-
-        File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
-
-        File DestFile=new File("C:\\Users\\gresh\\IdeaProjects\\Testngsample\\screenshots");
-        try {
-            FileUtils.copyFile(SrcFile, DestFile);
-        } catch (IOException e) {
+        extentTest=reports.createTest(result.getName());
+        extentTest.log(Status.PASS, result.getName());
+        try{
+            extentTest.addScreenCaptureFromPath(bookmyshow.takeScreenshot());
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("onTestSuccess Method" +result.getName());
 
     }
 
     public void onTestFailure(ITestResult result) {
-        System.out.println("onTestFailure Method" +result.getName());
-        TakesScreenshot scrShot =((TakesScreenshot)driver);
-
-        File SrcFile=scrShot.getScreenshotAs(OutputType.FILE);
-
-        File DestFile=new File("C:\\Users\\gresh\\IdeaProjects\\Testngsample\\screenshotFailed");
-        try {
-            FileUtils.copyFile(SrcFile, DestFile);
-        } catch (IOException e) {
+        extentTest=reports.createTest(result.getName());
+        extentTest.log(Status.FAIL, result.getName());
+        try{
+            extentTest.addScreenCaptureFromPath(bookmyshow.takeScreenshot());
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println("onTestFailure Method" +result.getName());
     }
 
     public void onTestSkipped(ITestResult result) {
+        extentTest=reports.createTest(result.getName());
+        extentTest.log(Status.SKIP, result.getName());
+
         System.out.println("onTestSkipped Method" +result.getName());
     }
 
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        System.out.println("onTestFailedButWithinSuccessPercentage" +result.getName());
+    public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
+        System.out.println("method"+iTestResult.getName());
     }
+
 
 }
