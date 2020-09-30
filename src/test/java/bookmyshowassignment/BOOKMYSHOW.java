@@ -1,4 +1,4 @@
-package testngdemo;
+package bookmyshowassignment;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -40,7 +40,7 @@ public class BOOKMYSHOW {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                
+
                 e.printStackTrace();
             }
             WebDriverWait wait2=new WebDriverWait(driver, 200);
@@ -70,6 +70,7 @@ public class BOOKMYSHOW {
     }
 
     @Test(priority = 1)
+
     public void invalidMovie() throws InterruptedException {
         driver.findElement(By.id("input-search-box")).sendKeys("qq");
         Thread.sleep(2000);
